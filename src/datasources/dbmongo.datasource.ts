@@ -4,12 +4,12 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'dbmongo',
   connector: 'mongodb',
-  url: 'mongodb+srv://dbMaster:TDm82Aj%21mdru.FG@cluster0.pofck.mongodb.net/MicroServicioC?retryWrites=true&w=majority',
+  url: 'mongodb://jfuntes:XXk4zFu2ZqZpMA@147.182.187.121:27017/jfuntes_production?authSource=admin',
   //host: 'cluster0.pofck.mongodb.net',
   //port: 27017,
   //user: 'dbMaster',
   //password: 'TDm82Aj%21mdru.FG',
-  database: 'cities',
+  //database: 'cities',
   //useNewUrlParser: true
 };
 

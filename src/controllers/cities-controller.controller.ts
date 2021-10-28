@@ -42,8 +42,19 @@ export class CitiesControllerController {
       },
     }) data: Packagedata,
   ) {
-     console.log(data);
-     return this.citiesRepository.find({where: {postalcode: data.postalcode}});
+
+    const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode}});
+    //var tiempoEnvio = this.determinarTiempoEnvio();
+    return cities;
+  }
+  determinarTiempoEnvio(id_zone:number) {
+    if(id_zone === 1 || id_zone === 2 || id_zone === 4){
+      return "Siguiente dia habil"
+    }else if (id_zone === 3){
+      return "2-3 dias habiles"
+    }else{
+      return "3 dias habiles"
+    }
   }
 
 
