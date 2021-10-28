@@ -10,7 +10,7 @@ import {
   del, get,
   getModelSchemaRef, param, patch, post, put, requestBody, response
 } from '@loopback/rest';
-import {Cities} from '../models';
+import {Cities, Packagedata} from '../models';
 import {CitiesRepository} from '../repositories';
 
 export class CitiesControllerController {
@@ -19,22 +19,31 @@ export class CitiesControllerController {
     public citiesRepository : CitiesRepository,
   ) {}
 
-  @post('/calcularenvio/')
-  @response(200,{})
+  @post('/calcularenvio/', {
+    responses: {
+      '200': {
+        description: 'Return the number of correct answers',
+      },
+    },
+  })
   async calcularEnvio(
+    //@param.path.string('id') id: string,
     @requestBody({
-      description: 'Raw Body',      // Description can be anything
-      required: true,
       content: {
-        'application/json': {       // Make sure this matches the POST request type
-          // This is the key to skipping parsing
-          schema: {type: 'object'},
+        'application/json': {
+          type: 'object',
+          schema: {
+            properties: {
+              postalcode: {type: 'string'},
+              weight: {type: 'number'},
+            },
+          },
         },
       },
-    }) body: Buffer
-  ){
-    const rawBody = body;
-    return {rawBody}
+    }) data: Packagedata,
+  ) {
+     console.log(data);
+     return this.citiesRepository.find({where: {postalcode: data.postalcode}});
   }
 
 
