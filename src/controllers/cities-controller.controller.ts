@@ -11,12 +11,14 @@ import {
   getModelSchemaRef, param, patch, post, put, requestBody, response
 } from '@loopback/rest';
 import {Cities, Packagedata} from '../models';
-import {CitiesRepository} from '../repositories';
+import {CitiesRepository, ZonesRepository} from '../repositories';
 
 export class CitiesControllerController {
   constructor(
     @repository(CitiesRepository)
     public citiesRepository : CitiesRepository,
+    @repository(ZonesRepository)
+    public zonesRepository: ZonesRepository,
   ) {}
 
   @post('/calcularenvio/', {
@@ -43,14 +45,30 @@ export class CitiesControllerController {
     }) data: Packagedata,
   ) {
 
-    const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode}});
-    //var tiempoEnvio = this.determinarTiempoEnvio();
-    return cities;
+    const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode},limit:1});
+    const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
+    const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
+    const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
+    return {
+      tiempoEnvio: tiempoEnvio,
+      costodeEnvio: costodeEnvio
+    }
+
   }
-  determinarTiempoEnvio(id_zone:number) {
-    if(id_zone === 1 || id_zone === 2 || id_zone === 4){
+  determinarPrecioEnvio(weight:number,pricess:Object){
+    const prices = Object.values(pricess);
+    if(weight > 8){
+      const fixedPrice = prices[9];
+      const timesExtraPrice = (weight-8) * prices[10];
+      return fixedPrice + timesExtraPrice;
+    }else{
+      return prices[weight + 1];
+    }
+  }
+  determinarTiempoEnvio(idZone : number) {
+    if(idZone === 1 || idZone === 2 || idZone === 4){
       return "Siguiente dia habil"
-    }else if (id_zone === 3){
+    }else if (idZone === 3){
       return "2-3 dias habiles"
     }else{
       return "3 dias habiles"

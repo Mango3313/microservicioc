@@ -1,10 +1,22 @@
-import {Model, model, property} from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
-export class Zones extends Model {
+@model({settings: {
+  strict: false,
+  mongodb: {
+    collection: 'zones',
+  }
+}})
+export class Zones extends Entity {
+  @property({
+    type: 'string',
+    generated: false,
+    id:true,
+    required: true,
+  })
+  _id: string;
+
   @property({
     type: 'number',
-    id: true,
     generated: false,
     required: true,
   })
