@@ -21,15 +21,15 @@ export class CitiesControllerController {
     public zonesRepository: ZonesRepository,
   ) {}
 
-  @post('/calcularenvio/{code}', {
+  @post('/calcularenvio/', {
     responses: {
       '200': {
-        description: 'Return the price and time of a package',
+        description: 'Return the cost and time of a package delivery',
       },
     },
   })
   async calcularEnvio(
-    @param.path.string('code') code: string,
+    //@param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -44,24 +44,11 @@ export class CitiesControllerController {
       },
     }) data: Packagedata,
   ) {
+
     const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode},limit:1});
     const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
     const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
     const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
-    if (code != null){
-      //TODO: Consultar con microservicio B para descuento
-      console.log(code);
-      return {
-        tiempoEnvio: tiempoEnvio,
-        costodeEnvio: costodeEnvio
-      }
-    }else{
-      return {
-        tiempoEnvio: tiempoEnvio,
-        costodeEnvio: costodeEnvio
-      }
-    }
-
     return {
       tiempoEnvio: tiempoEnvio,
       costodeEnvio: costodeEnvio
