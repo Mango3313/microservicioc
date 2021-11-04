@@ -1,8 +1,17 @@
+import * as Sentry from "@sentry/node";
 import {ApplicationConfig, MicroServicioApplication} from './application';
 
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
+
+  Sentry.init({
+    dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+  });
   const app = new MicroServicioApplication(options);
   await app.boot();
   await app.start();

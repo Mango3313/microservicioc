@@ -1,16 +1,8 @@
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where
+  repository
 } from '@loopback/repository';
-import {
-  del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody, response
-} from '@loopback/rest';
-import {Cities, Packagedata} from '../models';
+import {post, requestBody} from '@loopback/rest';
+import {Packagedata} from '../models';
 import {CitiesRepository, ZonesRepository} from '../repositories';
 
 export class CitiesControllerController {
@@ -74,8 +66,8 @@ export class CitiesControllerController {
       return "3 dias habiles"
     }
   }
-
-
+}
+/**
   @post('/cities')
   @response(200, {
     description: 'Cities model instance',
@@ -198,3 +190,4 @@ export class CitiesControllerController {
     await this.citiesRepository.deleteById(id);
   }
 }
+**/
