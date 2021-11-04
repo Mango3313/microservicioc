@@ -2,6 +2,7 @@ import {
   repository
 } from '@loopback/repository';
 import {post, requestBody} from '@loopback/rest';
+import * as Sentry from "@sentry/node";
 import {Packagedata} from '../models';
 import {CitiesRepository, ZonesRepository} from '../repositories';
 
@@ -30,23 +31,27 @@ export class CitiesControllerController {
             properties: {
               postalcode: {type: 'string'},
               weight: {type: 'number'},
+              paymethod: {type: 'string'},
+              coupon: {type: 'string'}
             },
           },
         },
       },
     }) data: Packagedata,
   ) {
-
-    const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode},limit:1});
-    const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
-    const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
-    const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
-    return {
-      idZone: cities[0].id_zone,
-      tiempoEnvio: tiempoEnvio,
-      costodeEnvio: costodeEnvio
+    try {
+       const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode},limit:1});
+       const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
+       const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
+       const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
+       return {
+         idZone: cities[0].id_zone,
+         tiempoEnvio: tiempoEnvio,
+         costodeEnvio: costodeEnvio
+        }
+    } catch (error) {
+      Sentry.captureException(error);
     }
-
   }
   determinarPrecioEnvio(weight:number,pricess:Object){
     const prices = Object.values(pricess);

@@ -13,6 +13,16 @@ export class Packagedata extends Model {
     required: true,
   })
   weight: number;
+  @property({
+    type: 'string',
+    required: true,
+  })
+  paymethod: string;
+  @property({
+    type: 'string',
+    required: true,
+  })
+  coupon: string;
 
   // Define well-known properties here
 
