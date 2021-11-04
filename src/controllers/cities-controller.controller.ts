@@ -42,6 +42,7 @@ export class CitiesControllerController {
     const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
     const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
     return {
+      idZone: cities[0].id_zone,
       tiempoEnvio: tiempoEnvio,
       costodeEnvio: costodeEnvio
     }
