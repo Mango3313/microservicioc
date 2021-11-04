@@ -39,6 +39,20 @@ export class CitiesControllerController {
       },
     }) data: Packagedata,
   ) {
+    const transaction = Sentry.startTransaction({
+      op: "test",
+      name: "My First Test Transaction",
+    });
+
+    setTimeout(() => {
+      try {
+        console.log("Juas juas");
+      } catch (e) {
+        Sentry.captureException(e);
+      } finally {
+        transaction.finish();
+      }
+    }, 99);
     try {
        const cities =  await this.citiesRepository.find({where: {postalcode: data.postalcode},limit:1});
        const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
