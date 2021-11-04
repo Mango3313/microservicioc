@@ -44,10 +44,32 @@ export class CitiesControllerController {
        const tiempoEnvio = this.determinarTiempoEnvio(cities[0].id_zone);
        const prices = await this.zonesRepository.find({where:{id: cities[0].id_zone}});
        const costodeEnvio = this.determinarPrecioEnvio(data.weight,prices[0]);
+       let precioFinalEnvio = costodeEnvio;
+       let validCoupon = false;
+       const appliedCoupons = [];
+       if(data.coupon === 'PERRITOFELI'){
+        if(cities[0].id_zone === 1 ||cities[0].id_zone === 2 ||cities[0].id_zone === 3 ){
+          if(data.paymethod === 'visa' || data.paymethod === 'mastercard'){
+            precioFinalEnvio = costodeEnvio * 0.85;
+            validCoupon = true;
+            appliedCoupons.push('PERRITOFELI');
+          }
+        }
+       }else if(data.coupon === 'NOJADO'){
+        if(cities[0].id_zone === 4 ||cities[0].id_zone === 5){
+          precioFinalEnvio = costodeEnvio * 0.90;
+          validCoupon = true;
+          appliedCoupons.push('PERRITOFELI');
+        }
+       }
+
        return {
          idZone: cities[0].id_zone,
          tiempoEnvio: tiempoEnvio,
-         costodeEnvio: costodeEnvio
+         costodeEnvio: costodeEnvio,
+         couponIsValid: validCoupon,
+         descuentosAplicados: appliedCoupons,
+         precioFinalEnvio:precioFinalEnvio,
         }
     } catch (error) {
       Sentry.captureException(error);

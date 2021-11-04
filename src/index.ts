@@ -6,10 +6,11 @@ export * from './application';
 export async function main(options: ApplicationConfig = {}) {
 
   Sentry.init({
-    dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
+    dsn: "https://c38d683a23904ef298f6c6df9ac24570@o1059747.ingest.sentry.io/6048611",
 
-    // We recommend adjusting this value in production, or using tracesSampler
-    // for finer control
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
   });
   const app = new MicroServicioApplication(options);
